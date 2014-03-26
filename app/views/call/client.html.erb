@@ -1,0 +1,50 @@
+  <script type="text/javascript"
+      src="//static.twilio.com/libs/twiliojs/1.1/twilio.min.js"></script>
+  <script type="text/javascript"
+    src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
+  </script>
+  <link href="//static0.twilio.com/packages/quickstart/client.css" type="text/css" rel="stylesheet" />
+
+<script type="text/javascript">
+  /* Capability Tokenと紐付いたクライアントを作成する */
+  Twilio.Device.setup("<%= @token %>", {debug: true});
+
+  /* 待機中になったら、ログ出力する */
+  Twilio.Device.ready(function (device) {
+    $("#log").text("クライアント '<%= @client_name %>' が待機中です。");
+  });
+
+  /* エラーをログ出力する */
+  Twilio.Device.error(function (error) {
+      $("#log").text("エラー： " + error.message);
+  });
+
+  /* コール切断をログ出力する */
+  Twilio.Device.disconnect(function (conn) {
+      $("#log").text("コールを切断しました。");
+  });
+
+  /* 入電をリスニングする */
+  Twilio.Device.incoming(function (conn) {
+    $("#log").text("Incoming connection from " + conn.parameters.From);
+    conn.accept();
+  });
+
+  function call() {
+    // Twilio.Device.connect();
+    Twilio.Device.connect(function (conn) {
+      $("#log").text("コールが接続しました。");
+    });
+  }
+
+  /* コールを切断 */
+  function hangup() {
+    Twilio.Device.disconnectAll();
+  }
+</script>
+
+<button class="call" onclick="call();">応答</button>
+
+<button class="hangup" onclick="hangup();">切断</button>
+
+<div id="log">準備中...</div>
