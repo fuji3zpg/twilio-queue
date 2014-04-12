@@ -9,7 +9,7 @@ class Call
       from: ENV['TWILIO_CALL_FROM'],
       to: ENV['TWILIO_CALL_TO'],
       url: ENV['TWILIO_XML_URL'],
-      method: 'get'
+      method: 'post'
     )
   end
 end

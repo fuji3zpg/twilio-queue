@@ -1,4 +1,7 @@
 class CallController < ApplicationController
+  # voiceメソッドへのCSRFチェックをオフにする。POSTメソッドを送る時に、オフにしておかないとエラーが発生する。
+  protect_from_forgery except: [:voice]
+
   def client
     @client_name = default_client
 
