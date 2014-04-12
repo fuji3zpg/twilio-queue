@@ -24,9 +24,10 @@
       $("#log").text("コールを切断しました。");
   });
 
-  /* 入電をリスニングする */
+  /* 電話受信をリスニングし、かかってきたら応答する */
   Twilio.Device.incoming(function (conn) {
-    $("#log").text("Incoming connection from " + conn.parameters.From);
+    $("#log").text(conn.parameters.From + "から電話がかかってきました。");
+    // 接続に応答する
     conn.accept();
   });
 
