@@ -9,7 +9,7 @@
   /* Capability Tokenと紐付いたクライアントを作成する */
   Twilio.Device.setup("<%= @token %>", {debug: true});
 
-  /* 待機中になったら、ログ出力する */
+  /* エージェントが待機中（電話応答可能状態）になったら、ログ出力する */
   Twilio.Device.ready(function (device) {
     $("#log").text("クライアント '<%= @client_name %>' が待機中です。");
   });
@@ -30,20 +30,11 @@
     conn.accept();
   });
 
-  function call() {
-    // Twilio.Device.connect();
-    Twilio.Device.connect(function (conn) {
-      $("#log").text("コールが接続しました。");
-    });
-  }
-
   /* コールを切断 */
   function hangup() {
     Twilio.Device.disconnectAll();
   }
 </script>
-
-<button class="call" onclick="call();">応答</button>
 
 <button class="hangup" onclick="hangup();">切断</button>
 

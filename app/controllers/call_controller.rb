@@ -1,17 +1,14 @@
 class CallController < ApplicationController
-  protect_from_forgery except: [:receive, :voice]
-
   def client
     @client_name = default_client
 
+    # 以下、エージェント用クライアントが使える機能を設定する
     account_sid = ENV['TWILIO_SID']
     auth_token = ENV['TWILIO_TOKEN']
 
-    demo_app_sid = ENV['TWILIO_DEMO_APP_SID']
     capability = Twilio::Util::Capability.new account_sid, auth_token
-    capability.allow_client_outgoing demo_app_sid
-    capability.allow_client_incoming @client_name
-    @token = capability.generate
+    capability.allow_client_incoming @client_name # 電話応答機能を有効に
+    @token = capability.generate # エージェント用クライアントに設定するトークン
   end
 
   def voice
