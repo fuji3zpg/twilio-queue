@@ -3,7 +3,12 @@ class CallController < ApplicationController
   protect_from_forgery except: [:voice]
 
   def client
-    @client_name = default_client
+    # パラメータ"client"でクライアント名を設定する。未設定の場合は、デフォルトのエージェント名を使用する
+    @client_name = params[:client]
+
+    if @client_name.nil?
+      @client_name = default_client
+    end
 
     # 以下、エージェント用クライアントが使える機能を設定する
     account_sid = ENV['TWILIO_SID']
