@@ -1,6 +1,6 @@
 class CallController < ApplicationController
-  # voiceメソッドへのCSRFチェックをオフにする。voiceメソッドにPOSTメソッドを送る時に、オフにしておかないとエラーが発生する。
-  protect_from_forgery except: [:voice]
+  # collect_digitとreceiveメソッドへのCSRFチェックをオフにする。collect_digitメソッドにPOSTメソッドを送る時に、オフにしておかないとエラーが発生する。
+  protect_from_forgery except: [:voice, :collect_digit, :receive]
 
   def client
     # パラメータ"client"でクライアント名を設定する。未設定の場合は、デフォルトのエージェント名を使用する
@@ -24,6 +24,37 @@ class CallController < ApplicationController
       # callerIdは、取得したTwilioの番号か、Twilioに認証された電話番号（Caller ID）を設定する
       r.Dial :callerId => ENV['TWILIO_CALL_FROM'] do |d|
         d.Client default_client()
+      end
+    end
+
+    render xml: response.text
+  end
+
+  def collect_digit
+    base_url = request.protocol + request.host_with_port
+
+    response = Twilio::TwiML::Response.new do |r|
+      # 1桁の数字を取得し（numDigits）、actionのTwiMLに渡す。タイムアウトは10秒。
+      r.Gather(action: base_url + '/call/receive', numDigits: 1, timeout: 10) do
+        r.Say('お問い合わせの場合は１、注文の場合は２を押してください', voice: 'woman', language: 'ja-JP')
+      end
+
+      # タイムアウト時の処理
+      r.Say('何も入力されませんでした', voice: 'woman', language: 'ja-JP')
+      r.Redirect base_url + "/call/receive"
+    end
+
+    render xml: response.text
+  end
+
+  def receive
+    response = Twilio::TwiML::Response.new do |r|
+      r.Dial callerId: ENV['TWILIO_CALL_FROM'] do |d|
+        if params[:Digits] == "1"
+          d.Client 'Agent1'
+        else
+          d.Client 'Agent2'
+        end
       end
     end
 
