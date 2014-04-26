@@ -35,8 +35,17 @@
   function hangup() {
     Twilio.Device.disconnectAll();
   }
+
+  function queue() {
+    params = {"Queue": $("#queue").val()};
+    console.log("#queue: " + $("#queue").val());
+    Twilio.Device.connect(params);
+  }
 </script>
 
+<button class="call" onclick="queue();">キューに接続</button>
 <button class="hangup" onclick="hangup();">切断</button>
+
+<input type="text" id="queue" nume="queue" placeholder="キュー名： 例）Customer Support" />
 
 <div id="log">準備中...</div>

@@ -5,6 +5,9 @@ TwilioAgentBrowser::Application.routes.draw do
   post 'call/collect_digit'
   post 'call/receive'
 
+  post "call/queue"
+  post "call/enqueue"
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
