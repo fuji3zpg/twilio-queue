@@ -36,7 +36,7 @@ class CallController < ApplicationController
 
     response = Twilio::TwiML::Response.new do |r|
       # 1桁の数字を取得し（numDigits）、actionのTwiMLに渡す。タイムアウトは10秒。
-      r.Gather(action: base_url + '/call/receive', numDigits: 1, timeout: 10) do
+      r.Gather(action: call_enqueue_path, numDigits: 1, timeout: 10) do
         r.Say('お問い合わせの場合は１、注文の場合は２を押してください', voice: 'woman', language: 'ja-JP')
       end
 
